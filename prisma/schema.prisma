@@ -1,0 +1,92 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id Int @id @default(autoincrement()) 
+  username String @unique
+  hashword String
+  email String @unique
+}
+
+model Game {
+  id Int @id @default(autoincrement())
+  name String
+  dmId Int
+  dm User @relation(fields: [dmId], references: [id])
+}
+
+model Character {
+  id Int @id @default(autoincrement())
+  name String
+  level Int
+  inventory Inventory[]
+  classId Int
+  class Class @relation(fields: [classId], references: [id])
+  personality String
+  ideals String
+  bonds String
+  flaws String
+  speed Int
+  strength Int
+  dexterity Int
+  constitution Int
+  intelligence Int
+  wisdom Int
+  charisma Int
+  armorClass Int
+  background String
+  raceId Int
+  race Race @relation(fields: [raceId], references: [id])
+  languages Language[]
+}
+
+model Race {
+  id Int @id @default(autoincrement())
+}
+
+model Class {
+  id Int @id @default(autoincrement())
+  name String @unique
+  spells Spell[]
+  feats Feat[]
+
+}
+
+model Spell {
+  id Int @id @default(autoincrement())
+}
+
+model Feat {
+  id Int @id @default(autoincrement())
+}
+
+model Item {
+  id Int @id @default(autoincrement())
+}
+
+model Inventory {
+  characterId Int
+  character Character @relation(fields: [characterId], references: [id])
+  itemId Int
+  item Item @relation(fields: [itemId], references: [id])
+  quantity Int
+
+  @@id([characterId, itemId])
+}
+
+model Language {
+  id Int @id @default(autoincrement())
+}
+
+model Proficiency {
+  id Int @id @default(autoincrement())
+}
