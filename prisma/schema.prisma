@@ -108,7 +108,8 @@ model Background {
   starting_proficiencies Proficiency[]
   languages Language[]
   starting_equipment Equipment[]
-  starting_equipment_options Equipment[]
+  starting_equipment_choices Int // choose : 
+  starting_equipment_options Equipment[] // from : 
   feature BackgroundFeature
   url String @unique
 }
@@ -118,26 +119,68 @@ model Class {
   index String @unique
   name String @unique
   hit_die Int
+  proficiencies Proficiency[]
   proficiency_choices Int // { choose: "2" }
   proficiency_choice_list Proficiency[] // Choose 2 from : 
-  proficiencies Proficiency[]
   saving_throws Skill[]
-  
-
+  starting_equipment Equipment[]
+  starting_equipment_choices Int // Choose :
+  starting_equipment_options Equipment[]
+  class_levels Levels[]
+  subclasses SubClasses[]
+  spellcasting SpellCasting
+  spells Spell[]
+  features Feature[]
+  url String @unique
 }
+
+model Level {
+  id Int @id @default(autoincrement())
+  index String @unique
+  ability_score_bonuses Int
+  prof_bonus Int
+  feature_choices Feature[]
+  features Feature[]
+  class_id Int
+  class Class
+  // class_specific
+  // spellcasting
+}
+
+model SubClass {
+  id Int @id @default(autoincrement())
+  index String @unique
+  class_id Int
+  class Class
+  name String
+  flavor String
+  description String
+  spells Spell[]
+  // subclass_levels
+  features Feature[]
+  levels Level[]
+  url String @unique
+}
+
+model Feature {
+  id Int @id @default(autoincrement())
+  index String @unique
+  name String
+  level Int
+  class_id Int
+  class Class
+  subclass_id Int
+  subclass SubClass
+  description String
+  url String @unique
+}
+
+
 
 model Race {
   id Int @id @default(autoincrement())
   name String @unique
   speed Int
-
-}
-
-model Class {
-  id Int @id @default(autoincrement())
-  name String @unique
-  spells Spell[]
-  feats Feat[]
 
 }
 
