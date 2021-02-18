@@ -179,9 +179,34 @@ model Feature {
 
 model Race {
   id Int @id @default(autoincrement())
+  index String @unique
   name String @unique
   speed Int
+  ability_bonuses AbilityBonus[]
+  alignment String?
+  age String?
+  size String
+  size_desc String
+  starting_proficiencies Proficiency[]
+  languages Language[]
+  languages_desc String
+  traits Trait[]
+  subraces SubRace[]
+  url String @unique
+}
 
+model SubRace {
+  id Int @id @default(autoincrement())
+  index String @unique
+  name String
+  race_id Int
+  Race Race
+  description String
+  ability_bonuses AbilityBonus[]
+  starting_proficiencies Proficiency[]
+  languages Language[]
+  traits Trait[]
+  url String @unique
 }
 
 model Spell {
