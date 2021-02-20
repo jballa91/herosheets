@@ -175,8 +175,6 @@ model Feature {
   url String @unique
 }
 
-
-
 model Race {
   id Int @id @default(autoincrement())
   index String @unique
@@ -206,6 +204,48 @@ model SubRace {
   starting_proficiencies Proficiency[]
   languages Language[]
   traits Trait[]
+  url String @unique
+}
+
+model Trait {
+  id Int @id @default(autoincrement())
+  index String @unique
+  races Race[]
+  subraces SubRace[]
+  name String
+  description String
+  proficiencies Proficiency[]
+  proficiencies_choices Int
+  proficiency_choices Proficiency[]
+  url String @unique
+}
+
+model EquipmentCategory {
+  id Int @id @default(autoincrement())
+  index String @unique
+  name String
+  equipment Equipment[]
+}
+
+model Equipment {
+  id Int @id @default(autoincrement())
+  index String @unique
+  name String
+  equipment_category_id Int
+  equipment_category EquipmentCategory @relation(fields: [equipment_category_id], references: [id])
+  weapon_category String?
+  weapon_range String?
+  category_range String?
+  armor_category String?
+  armor_class String?
+  str_minimum Int?
+  stealth_disadv Boolean?
+  cost String?
+  damage String?
+  two_handed_damage String?
+  range String?
+  weight Int
+  properties WeaponProperty[]
   url String @unique
 }
 
