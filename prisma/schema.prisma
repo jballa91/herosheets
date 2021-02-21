@@ -128,7 +128,7 @@ model Equipment {
   damage String?
   two_handed_damage String?
   range String?
-  weight Int
+  weight Float?
   properties WeaponProperty[]
   contents Equipment[]
   backgrounds Background[] @relation("starting_equipment_bg")
