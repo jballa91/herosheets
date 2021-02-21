@@ -10,6 +10,7 @@ generator client {
   provider = "prisma-client-js"
 }
 
+
 model User {
   id Int @id @default(autoincrement()) 
   username String @unique
@@ -19,20 +20,22 @@ model User {
   parties Game[] @relation("party")
 }
 
+// Might need more info here....
 model Game {
   id Int @id @default(autoincrement())
   name String
   dm_id Int
   dm User @relation("dm", fields: [dm_id], references: [id])
   players User[] @relation("party")
-
 }
 
+// This is most likely incomplete
 model Character {
   id Int @id @default(autoincrement())
   name String
   level Int
   inventory Inventory[]
+  wallet String
   class_id Int
   class Class @relation(fields: [class_id], references: [id])
   personality String
@@ -58,7 +61,7 @@ model AbilityScore {
   index String @unique
   name String @unique
   full_name String @unique
-  description String
+  description String[]
   skills Skill[] 
   url String @unique
 }
@@ -72,13 +75,93 @@ model Skill {
   url String @unique
 }
 
+model Class {
+  id Int @id @default(autoincrement())
+  index String @unique
+  name String @unique
+  hit_die Int
+  proficiencies Proficiency[] @relation("proficiencies")
+  proficiency_choices Int // { choose: "2" }
+  proficiency_choice_list Proficiency[] @relation("proficiency_choices_class")// Choose 2 from : 
+  saving_throws Skill[]
+  starting_equipment Equipment[] @relation("starting_equipment")
+  starting_equipment_choices Int // Choose :
+  starting_equipment_options Equipment[] @relation("starting_equipment_choices")
+  class_levels Level[]
+  subclasses SubClass[]
+  // spellcasting SpellCasting
+  spells Spell[]
+  features Feature[]
+  traits Trait[]
+  url String @unique
+}
+
+model Background {
+  id Int @id @default(autoincrement())
+  index String @unique
+  name String
+  starting_proficiencies Proficiency[]
+  languages Language[]
+  starting_equipment Equipment[] @relation("starting_equipment_bg")
+  starting_equipment_choices Int // choose : 
+  starting_equipment_options Equipment[] @relation("starting_equipment_choices_bg") // from : 
+  feature Feature
+  url String @unique
+}
+
+model Equipment {
+  id Int @id @default(autoincrement())
+  index String @unique
+  name String
+  equipment_category_id Int
+  equipment_category EquipmentCategory @relation("equipment-cat", fields: [equipment_category_id], references: [id])
+  gear_category_id Int?
+  gear_category EquipmentCategory? @relation("gear-cat", fields: [gear_category_id], references: [id])
+  weapon_category String?
+  weapon_range String?
+  category_range String?
+  armor_category String?
+  armor_class String?
+  str_minimum Int?
+  stealth_disadv Boolean?
+  cost String?
+  damage String?
+  two_handed_damage String?
+  range String?
+  weight Int
+  properties WeaponProperty[]
+  contents Equipment[]
+  backgrounds Background[] @relation("starting_equipment_bg")
+  backgrounds_starting Background[] @relation("starting_equipment_choices_bg")
+  classes Class[] @relation("starting_equipment")
+  classes_starting Class[] @relation("starting_equipment_choices")
+  url String @unique
+}
+
+model Trait {
+  id Int @id @default(autoincrement())
+  index String @unique
+  races Race[]
+  subraces SubRace[]
+  name String
+  description String[]
+  proficiencies Proficiency[] @relation("proficiency")
+  proficiencies_choices Int
+  proficiency_choices Proficiency[] @relation("proficiency_choices_trait")
+  classes Class[] @relation("traits")
+  url String @unique
+}
+
 model Proficiency {
   id Int @id @default(autoincrement())
   index String @unique
   type String
   name String @unique
-  classes Class[]
+  classes Class[] @relation("proficiencies")
+  classchoices Class[] @relation("prificiency_choices_class")
   races Race[]
+  traits Trait[] @relation("proficiency")
+  traits_starting Trait[] @relation("proficiency_choices_trait")
   url String @unique
 }
 
@@ -97,40 +180,7 @@ model Alignment {
   index String @unique
   name String
   abbreviation String
-  description String
-  url String @unique
-}
-
-model Background {
-  id Int @id @default(autoincrement())
-  index String @unique
-  name String
-  starting_proficiencies Proficiency[]
-  languages Language[]
-  starting_equipment Equipment[]
-  starting_equipment_choices Int // choose : 
-  starting_equipment_options Equipment[] // from : 
-  feature BackgroundFeature
-  url String @unique
-}
-
-model Class {
-  id Int @id @default(autoincrement())
-  index String @unique
-  name String @unique
-  hit_die Int
-  proficiencies Proficiency[]
-  proficiency_choices Int // { choose: "2" }
-  proficiency_choice_list Proficiency[] // Choose 2 from : 
-  saving_throws Skill[]
-  starting_equipment Equipment[]
-  starting_equipment_choices Int // Choose :
-  starting_equipment_options Equipment[]
-  class_levels Levels[]
-  subclasses SubClasses[]
-  spellcasting SpellCasting
-  spells Spell[]
-  features Feature[]
+  description String[]
   url String @unique
 }
 
@@ -139,8 +189,8 @@ model Level {
   index String @unique
   ability_score_bonuses Int
   prof_bonus Int
-  feature_choices Feature[]
-  features Feature[]
+  features Feature[] @relation("features")
+  feature_choices Feature[] @relation("feature_choices")
   class_id Int
   class Class
   // class_specific
@@ -154,9 +204,8 @@ model SubClass {
   class Class
   name String
   flavor String
-  description String
+  description String[]
   spells Spell[]
-  // subclass_levels
   features Feature[]
   levels Level[]
   url String @unique
@@ -171,7 +220,8 @@ model Feature {
   class Class
   subclass_id Int
   subclass SubClass
-  description String
+  description String[]
+  levels Level[] @relation("feature_choices")
   url String @unique
 }
 
@@ -180,7 +230,7 @@ model Race {
   index String @unique
   name String @unique
   speed Int
-  ability_bonuses AbilityBonus[]
+  ability_bonuses String
   alignment String?
   age String?
   size String
@@ -199,24 +249,11 @@ model SubRace {
   name String
   race_id Int
   Race Race
-  description String
-  ability_bonuses AbilityBonus[]
+  description String[]
+  ability_bonuses String
   starting_proficiencies Proficiency[]
   languages Language[]
   traits Trait[]
-  url String @unique
-}
-
-model Trait {
-  id Int @id @default(autoincrement())
-  index String @unique
-  races Race[]
-  subraces SubRace[]
-  name String
-  description String
-  proficiencies Proficiency[]
-  proficiencies_choices Int
-  proficiency_choices Proficiency[]
   url String @unique
 }
 
@@ -224,48 +261,128 @@ model EquipmentCategory {
   id Int @id @default(autoincrement())
   index String @unique
   name String
-  equipment Equipment[]
+  equipment Equipment[] @relation("equipment")
+  gear Equipment[] @relation("gear-cat")
+  backgrounds Background[]
 }
 
-model Equipment {
+model MagicItem {
   id Int @id @default(autoincrement())
   index String @unique
   name String
   equipment_category_id Int
-  equipment_category EquipmentCategory @relation(fields: [equipment_category_id], references: [id])
-  weapon_category String?
-  weapon_range String?
-  category_range String?
-  armor_category String?
-  armor_class String?
-  str_minimum Int?
-  stealth_disadv Boolean?
-  cost String?
-  damage String?
-  two_handed_damage String?
-  range String?
-  weight Int
-  properties WeaponProperty[]
+  equipment_category EquipmentCategory @relation(fields:[equipment_category_id], references: [id])
+  description String[]
+  url String @unique
+}
+
+model WeaponProperty {
+  id Int @id @default(autoincrement())
+  index String @unique
+  name String
+  description String[]
   url String @unique
 }
 
 model Spell {
   id Int @id @default(autoincrement())
+  description String[]
+  higher_level String?
+  range String?
+  components String?
+  material String?
+  ritual Boolean?
+  duration String?
+  concentration Boolean?
+  casting_time String?
+  level Int?
+  attack_type String?
+  damage String?
+  school_id Int
+  school MagicSchool @relation(fields: [school_id], references:[id])
+  classes Class[]
+  subclasses SubClass[]
+  url String @unique
 }
 
-model Feat {
+// Monsters
+model Monster {
   id Int @id @default(autoincrement())
+  index String @unique
+  name String
+  size String
+  type String
+  subtype String
+  alignment String
+  armor_class Int
+  hit_points Int
+  hit_dice String
+  forms Monster[]
+  speed Json[]
+  strength Int
+  dexterity Int
+  constitution Int
+  intelligence Int
+  wisdom Int
+  charisma Int
+  damage_vulnerabilities String[]
+  damage_resistances String
+  damage_immunities String
+  condition_immunities String
+  senses Json
+  languages String
+  challenge_rating Float
+  special_abilities Json[]
+  actions Json[]
+  legendary_actions Json[]
+  url String @unique
 }
 
-model Item {
+model Condition {
   id Int @id @default(autoincrement())
+  name String
+  description String[]
+  url String @unique
+}
+
+model DamageType {
+  id Int @id @default(autoincrement())
+  index String @unique
+  name String
+  description String[]
+  url String @unique
+}
+
+model MagicSchool {
+  id Int @id @default(autoincrement())
+  inex String @unique
+  name String
+  description String[]
+  url String @unique
+}
+
+model Rules {
+  id Int @id @default(autoincrement())
+  index String @unique
+  name String
+  description String
+  subsections RuleSection[]
+  url String @unique
+}
+
+model RuleSection {
+  id Int @id @default(autoincrement())
+  index String @unique
+  name String
+  description String
+  url String @unique
 }
 
 model Inventory {
   characterId Int
   character Character @relation(fields: [characterId], references: [id])
   itemId Int
-  item Item @relation(fields: [itemId], references: [id])
+  item Equipment @relation(fields: [itemId], references: [id])
   quantity Int
 
   @@id([characterId, itemId])
