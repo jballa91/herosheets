@@ -11,7 +11,7 @@ const seedEquipment = async () => {
     let indices = [];
 
     for (item of equipment.results) {
-        indices.push(item.index)
+        indices.push(item.index);
     }
 
     for (item of indices) {
@@ -84,6 +84,7 @@ const seedEquipment = async () => {
             })
         }
     }
+    
     await prisma.$disconnect();
     log.green("         ", "--------------------------");
     log.green("         ", "FINISHED SEEDING EQUIPMENT");
