@@ -1,4 +1,5 @@
 const fetch = require("node-fetch");
+const {log} = require("mercedlogger");
 const {PrismaClient} = require("@prisma/client");
 
 const prisma = new PrismaClient();
@@ -16,7 +17,7 @@ const seedWeaponProperties = async () => {
         let propdata = await fetch(`https://dnd5eapi.co/api/weapon-properties/${item}`);
         let prop = await propdata.json();
 
-        console.log(prop.name);
+        log.cyan("Property", prop.name);
 
         await prisma.weaponProperty.create({
             data: {
@@ -29,9 +30,9 @@ const seedWeaponProperties = async () => {
     }
 
     await prisma.$disconnect();
-    console.log("----------------------------------")
-    console.log("FINISHED SEEDING WEAPON PROPERTIES")
-    console.log("----------------------------------")
+    log.green("        ", "----------------------------------")
+    log.green("        ", "FINISHED SEEDING WEAPON PROPERTIES")
+    log.green("        ", "----------------------------------")
 } 
 
 seedWeaponProperties();

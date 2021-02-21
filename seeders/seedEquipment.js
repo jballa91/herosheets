@@ -1,4 +1,5 @@
 const fetch = require("node-fetch");
+const {log} = require("mercedlogger");
 const {PrismaClient} = require("@prisma/client");
 
 let prisma = new PrismaClient();
@@ -25,7 +26,7 @@ const seedEquipment = async () => {
                 id: true,
             },
         })
-        console.log(founditem.name);
+        log.cyan("Equipment", founditem.name);
 
         if (!founditem.weapon_category || !founditem.armor_category) {
             await prisma.equipment.create({
@@ -84,9 +85,9 @@ const seedEquipment = async () => {
         }
     }
     await prisma.$disconnect();
-    console.log("--------------------------");
-    console.log("FINISHED SEEDING EQUIPMENT");
-    console.log("--------------------------");
+    log.green("         ", "--------------------------");
+    log.green("         ", "FINISHED SEEDING EQUIPMENT");
+    log.green("         ", "--------------------------");
 }
 
 seedEquipment()

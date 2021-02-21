@@ -1,4 +1,5 @@
 const fetch = require("node-fetch");
+const {log} = require("mercedlogger");
 const {PrismaClient} = require("@prisma/client");
 
 let prisma = new PrismaClient();
@@ -23,12 +24,12 @@ const seedEquipmentCategories = async () => {
                 name: founditem.name,
             }
         })
-        console.log(founditem.name);
+        log.cyan("Category", founditem.name);
     }
     await prisma.$disconnect()
-    console.log("-------------------------------------")
-    console.log("FINISHED SEEDING EQUIPMENT CATEGORIES")
-    console.log("-------------------------------------")
+    log.green("        ", "-------------------------------------")
+    log.green("        ", "FINISHED SEEDING EQUIPMENT CATEGORIES")
+    log.green("        ", "-------------------------------------")
 }
 
 seedEquipmentCategories()
