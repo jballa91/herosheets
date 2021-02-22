@@ -6,3 +6,4 @@ equipment
 proficiencies
 traits
 languages
+alignments

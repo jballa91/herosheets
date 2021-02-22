@@ -215,11 +215,9 @@ model Feature {
   id Int @id @default(autoincrement())
   index String @unique
   name String
-  level Int
-  class_id Int
-  class Class
-  subclass_id Int
-  subclass SubClass
+  level Int?
+  class Class?
+  subclass SubClass?
   description String[]
   levels Level[] @relation("feature_choices")
   url String @unique
