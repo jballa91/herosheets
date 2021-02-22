@@ -5,3 +5,4 @@ weaponproperties
 equipment
 proficiencies
 traits
+languages
