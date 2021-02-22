@@ -1,12 +1,16 @@
 const fetch = require("node-fetch");
-const {log} = require("mercedlogger");
+const chalk = require("chalk");
 const {PrismaClient} = require("@prisma/client");
 
 let prisma = new PrismaClient();
 
 const seedEquipmentCategories = async () => {
+    console.log(chalk.yellow("Starting..."))
+
     let equipData = await fetch("https://dnd5eapi.co/api/equipment-categories");
     let equipment = await equipData.json();
+
+    console.log(chalk.green("Got Equipment Categories."));
 
     let indices = [];
 
@@ -14,9 +18,12 @@ const seedEquipmentCategories = async () => {
         indices.push(item.index)
     }
 
+    console.log(chalk.yellow("Seeding..."))
     for (item of indices) {
         let data = await fetch(`https://dnd5eapi.co/api/equipment-categories/${item}`)
         let founditem = await data.json();
+
+        console.log(chalk.black.bgCyan("Category:"), chalk.cyan(` ${founditem.name}`));
 
         await prisma.equipmentCategory.create({
             data: {
@@ -24,12 +31,12 @@ const seedEquipmentCategories = async () => {
                 name: founditem.name,
             }
         })
-        log.cyan("Category", founditem.name);
     }
+    
     await prisma.$disconnect()
-    log.green("        ", "-------------------------------------")
-    log.green("        ", "FINISHED SEEDING EQUIPMENT CATEGORIES")
-    log.green("        ", "-------------------------------------")
+    console.log(chalk.green("-------------------------------------"));
+    console.log(chalk.green("FINISHED SEEDING EQUIPMENT CATEGORIES"));
+    console.log(chalk.green("-------------------------------------"));
 }
 
 seedEquipmentCategories()
