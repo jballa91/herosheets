@@ -17,7 +17,7 @@ const seedTraits = async () => {
         indices.push(item.index);
     }
 
-    console.log(chalk.yellow("Seeding..."))
+    console.log(chalk.yellow("Seeding Traits..."))
     for (item of indices) {
         let data = await fetch(`https://dnd5eapi.co/api/traits/${item}`);
         let founditem = await data.json();
@@ -55,7 +55,7 @@ const seedTraits = async () => {
         await prisma.trait.create({
             data: {
                 index: founditem.index,
-                name: founditem.index,
+                name: founditem.name,
                 description: founditem.desc,
                 proficiencies: {
                     connect: [...proficiencies],
