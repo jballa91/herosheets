@@ -87,6 +87,8 @@ model Class {
   starting_equipment Equipment[] @relation("starting_equipment")
   starting_equipment_choices Int // Choose :
   starting_equipment_options Equipment[] @relation("starting_equipment_choices")
+  starting_equipment_choices2 Int
+  starting_equipment_options2 Equipment[] @relation("starting_equipment_choices2")
   class_levels Level[]
   subclasses SubClass[]
   // spellcasting SpellCasting
@@ -268,8 +270,8 @@ model MagicItem {
   id Int @id @default(autoincrement())
   index String @unique
   name String
-  equipment_category_id Int
-  equipment_category EquipmentCategory @relation(fields:[equipment_category_id], references: [id])
+  equipment_category_id Int?
+  equipment_category EquipmentCategory? @relation(fields:[equipment_category_id], references: [id])
   description String[]
   url String @unique
 }

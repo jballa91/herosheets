@@ -17,7 +17,8 @@ const seedWeaponProperties = async () => {
         indices.push(item.index)
     }
 
-    console.log(chalk.yellow("Seeding..."))
+    console.log(chalk.yellow("Seeding..."));
+    console.log("");
     for (item of indices) {
         let propdata = await fetch(`https://dnd5eapi.co/api/weapon-properties/${item}`);
         let founditem = await propdata.json();

@@ -18,6 +18,7 @@ const seedAlignments = async () => {
     }
 
     console.log(chalk.yellow("Seeding Alignments..."));
+    console.log("");
     for (item of indices) {
         let data = await fetch(`https://dnd5eapi.co/api/alignments/${item}`);
         let founditem = await data.json();

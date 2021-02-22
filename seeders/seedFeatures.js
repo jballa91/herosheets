@@ -18,6 +18,7 @@ const seedFeatures = async () => {
     }
 
     console.log(chalk.yellow("Seeding Features..."));
+    console.log("");
     for (item of indices) {
         let data = await fetch(`https://dnd5eapi.co/api/features/${item}`);
         let founditem = await data.json();

@@ -18,7 +18,8 @@ const seedEquipment = async () => {
         indices.push(item.index);
     }
 
-    console.log(chalk.yellow("Seeding..."))
+    console.log(chalk.yellow("Seeding..."));
+    console.log("");
     for (item of indices) {
         let data = await fetch(`https://dnd5eapi.co/api/equipment/${item}`)
         let founditem = await data.json();

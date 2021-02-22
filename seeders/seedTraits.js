@@ -17,7 +17,8 @@ const seedTraits = async () => {
         indices.push(item.index);
     }
 
-    console.log(chalk.yellow("Seeding Traits..."))
+    console.log(chalk.yellow("Seeding Traits..."));
+    console.log("");
     for (item of indices) {
         let data = await fetch(`https://dnd5eapi.co/api/traits/${item}`);
         let founditem = await data.json();
