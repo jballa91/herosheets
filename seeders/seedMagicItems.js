@@ -53,4 +53,4 @@ const seedMagicItems = async () => {
     console.log(chalk.green("----------------------------"));
 }
 
-seedMagicItems();
+module.exports = seedMagicItems;

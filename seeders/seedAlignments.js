@@ -44,4 +44,4 @@ const seedAlignments = async () => {
     console.log(chalk.green("---------------------------"));
 }
 
-seedAlignments()
+module.exports = seedAlignments;

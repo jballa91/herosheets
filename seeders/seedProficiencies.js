@@ -43,4 +43,4 @@ const seedProficiencies = async () => {
     console.log(chalk.green("------------------------------"));
 }
 
-seedProficiencies();
+module.exports = seedProficiencies;

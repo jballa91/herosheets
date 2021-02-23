@@ -45,4 +45,4 @@ const seedLanguages = async () => {
     console.log(chalk.green("--------------------------"));
 }
 
-seedLanguages();
+module.exports = seedLanguages;

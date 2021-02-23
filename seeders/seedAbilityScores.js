@@ -44,4 +44,4 @@ const seedAbilityScores = async () => {
     console.log(chalk.green("-------------------------------"));
 }
 
-seedAbilityScores()
+module.exports = seedAbilityScores;

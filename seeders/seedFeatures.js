@@ -44,4 +44,4 @@ const seedFeatures = async () => {
     console.log(chalk.green("-------------------------"));
 }
 
-seedFeatures();
+module.exports = seedFeatures;

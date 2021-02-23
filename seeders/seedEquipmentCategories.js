@@ -40,4 +40,4 @@ const seedEquipmentCategories = async () => {
     console.log(chalk.green("-------------------------------------"));
 }
 
-seedEquipmentCategories()
+module.exports = seedEquipmentCategories;

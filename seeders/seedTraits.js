@@ -78,4 +78,4 @@ const seedTraits = async () => {
     console.log(chalk.green("-----------------------"));
 }
 
-seedTraits();
+module.exports = seedTraits;

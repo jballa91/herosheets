@@ -54,4 +54,4 @@ const seedSkills = async () => {
     console.log(chalk.green("-----------------------"));
 }
 
-seedSkills();
+module.exports = seedSkills;

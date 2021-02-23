@@ -43,4 +43,4 @@ const seedWeaponProperties = async () => {
     console.log(chalk.green("-------------------------------------"));
 } 
 
-seedWeaponProperties();
+module.exports = seedWeaponProperties;

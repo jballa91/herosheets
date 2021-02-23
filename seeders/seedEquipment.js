@@ -36,18 +36,29 @@ const seedEquipment = async () => {
             },
         })
 
-        if (!founditem.weapon_category || !founditem.armor_category) {
+        let gear_category = null;
+        if (founditem.gear_category) {
+            let gc = await prisma.equipmentCategory.findUnique({
+                where: {
+                    index: founditem.gear_category.index,
+                }
+            });
+            gear_category = gc.id;
+        }
+
+        if (founditem.equipment_category.index !== "weapon" && founditem.equipment_category.index !== "armor") {
             await prisma.equipment.create({
                 data: {
                     index: founditem.index,
                     name: founditem.name,
                     equipment_category_id: category.id,
+                    gear_category_id: gear_category || null,
                     cost: `${founditem.cost.quantity}${founditem.cost.unit}`,
                     weight: founditem.weight, 
                     url: founditem.url,
                 }
             })
-        } else if (founditem.weapon_category && !founditem.armor_category) {
+        } else if (founditem.equipment_category.index === "weapon" && founditem.equipment_category.index !== "armor") {
             let properties = [];
             for (item of founditem.properties) {
                 let prop = await prisma.weaponProperty.findUnique({
@@ -55,20 +66,21 @@ const seedEquipment = async () => {
                         index: item.index
                     },
                 });
-                properties.append({id: prop.id})
+                properties.push({id: prop.id})
             }
             await prisma.equipment.create({
                 data: {
                     index: founditem.index,
                     name: founditem.name,
                     equipment_category_id: category.id,
+                    gear_category_id: gear_category || null,
                     cost: `${founditem.cost.quantity}${founditem.cost.unit}`,
                     weight: founditem.weight,
                     url: founditem.url,
                     weapon_category: founditem.weapon_category,
                     weapon_range: founditem.weapon_range,
                     category_range: founditem.category_range,
-                    damage: `${founditem.damage.damage_dice} ${founditem.damage.name}`,
+                    damage: founditem.damage ? `${founditem.damage.damage_dice} ${founditem.damage.damage_type.name}` : null,
                     range: founditem.range.normal,
                     properties: {
                         connect: [...properties],
@@ -81,7 +93,8 @@ const seedEquipment = async () => {
                     index: founditem.index,
                     name: founditem.name,
                     equipment_category_id: category.id,
-                    cost: `${founditem.cost.quantity}${founditems.cost.unit}`,
+                    gear_category_id: gear_category || null,
+                    cost: `${founditem.cost.quantity}${founditem.cost.unit}`,
                     weight: founditem.weight,
                     url: founditem.url,
                     armor_category: founditem.armor_category,
@@ -101,4 +114,4 @@ const seedEquipment = async () => {
     console.log(chalk.green("--------------------------"));
 }
 
-seedEquipment()
+module.exports = seedEquipment;
