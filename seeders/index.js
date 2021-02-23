@@ -9,7 +9,8 @@ const seedMagicItems = require("./seedMagicItems");
 const seedProficiencies = require("./seedProficiencies");
 const seedRaces = require("./seedRaces");
 const seedSkills = require("./seedSkills");
-// const seedSubRaces = require("./seedSubRaces");
+const seedSubraces = require("./seedSubRaces");
+const seedSubRaces = require("./seedSubRaces");
 const seedTraits = require("./seedTraits");
 // const seedTraits = require("./seedTraits");
 const seedWeaponProperties = require("./seedWeaponProperties");
@@ -28,6 +29,7 @@ const seed = async () => {
     await seedAbilityScores();
     await seedSkills();
     await seedRaces();
+    await seedSubraces();
 };
 
 module.exports = seed;

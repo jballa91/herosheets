@@ -5,6 +5,7 @@ const {PrismaClient} = require("@prisma/client");
 const prisma = new PrismaClient();
 
 const seedSubraces = async () => {
+    console.log("");
     console.log(chalk.yellow("Starting..."));
 
     let subracesData = await fetch("https://dnd5eapi.co/api/subraces");
@@ -41,12 +42,6 @@ const seedSubraces = async () => {
             starting_proficiencies.push({index: item.index})
         }
 
-        // let languages = [];
-        // for (item of founditem.languages) {
-        //     languages.push({index: item.index});
-        // }
-        // console.log(languages)
-
         let language_choices = [];
         let language_choice_num = 0
         if (founditem.language_options && founditem.language_options.from.length > 0) {
@@ -55,13 +50,11 @@ const seedSubraces = async () => {
                 language_choices.push({index: item.index});
             }
         }
-        console.log(language_choices)
 
         let traits = [];
         for (item of founditem.racial_traits) {
             traits.push({index: item.index});
         }
-        console.log(traits)
 
         let trait_choices = [];
         let trait_choices_num = 0;
@@ -75,13 +68,16 @@ const seedSubraces = async () => {
                 trait_choices.push({index: "high-elf-cantrip"});
             }
         }
-        console.log(trait_choices)
 
         await prisma.subRace.create({
             data: {
                 index: founditem.index,
                 name: founditem.name,
-                race_id: race.id,
+                race: {
+                    connect: {
+                        id: race.id,
+                    },
+                },
                 description: founditem.desc,
                 ability_bonuses: ability_bonuses,
                 starting_proficiencies: {
@@ -112,4 +108,4 @@ const seedSubraces = async () => {
     console.log(chalk.green("-------------------------"));
 }
 
-seedSubraces();
+module.exports = seedSubraces;

@@ -5,6 +5,7 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 const seedMagicItems = async () => {
+    console.log("");
     console.log(chalk.yellow("Starting..."));
 
     let magicItemsData = await fetch("https://dnd5eapi.co/api/magic-items");

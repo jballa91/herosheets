@@ -5,6 +5,7 @@ const {PrismaClient} = require("@prisma/client");
 let prisma = new PrismaClient();
 
 const seedEquipmentCategories = async () => {
+    console.log("");
     console.log(chalk.yellow("Starting..."))
 
     let equipData = await fetch("https://dnd5eapi.co/api/equipment-categories");
@@ -35,6 +36,8 @@ const seedEquipmentCategories = async () => {
     }
     
     await prisma.$disconnect()
+    console.log("");
+    console.log("");
     console.log(chalk.green("-------------------------------------"));
     console.log(chalk.green("FINISHED SEEDING EQUIPMENT CATEGORIES"));
     console.log(chalk.green("-------------------------------------"));

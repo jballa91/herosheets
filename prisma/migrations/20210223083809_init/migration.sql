@@ -111,26 +111,12 @@ CREATE TABLE "Equipment" (
     "cost" TEXT,
     "damage" TEXT,
     "two_handed_damage" TEXT,
-    "range" TEXT,
+    "range" INTEGER,
     "weight" DOUBLE PRECISION,
     "url" TEXT NOT NULL,
     "classId" INTEGER,
     "equipmentId" INTEGER,
     "equipmentCategoryId" INTEGER,
-
-    PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "Trait" (
-    "id" SERIAL NOT NULL,
-    "index" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
-    "description" TEXT[],
-    "proficiencies_choices" INTEGER NOT NULL,
-    "url" TEXT NOT NULL,
-    "classId" INTEGER,
-    "subRaceId" INTEGER,
 
     PRIMARY KEY ("id")
 );
@@ -149,6 +135,34 @@ CREATE TABLE "Proficiency" (
 );
 
 -- CreateTable
+CREATE TABLE "Trait" (
+    "id" SERIAL NOT NULL,
+    "index" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "description" TEXT[],
+    "proficiencies_choices" INTEGER NOT NULL,
+    "url" TEXT NOT NULL,
+    "classId" INTEGER,
+
+    PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "SubRace" (
+    "id" SERIAL NOT NULL,
+    "index" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "race_id" INTEGER NOT NULL,
+    "description" TEXT NOT NULL,
+    "ability_bonuses" TEXT,
+    "language_choice_num" INTEGER,
+    "traits_choices_num" INTEGER,
+    "url" TEXT NOT NULL,
+
+    PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "Language" (
     "id" SERIAL NOT NULL,
     "index" TEXT NOT NULL,
@@ -158,6 +172,7 @@ CREATE TABLE "Language" (
     "url" TEXT NOT NULL,
     "characterId" INTEGER,
     "backgroundId" INTEGER,
+    "subRaceId" INTEGER,
 
     PRIMARY KEY ("id")
 );
@@ -229,22 +244,6 @@ CREATE TABLE "Race" (
     "size_desc" TEXT NOT NULL,
     "languages_desc" TEXT NOT NULL,
     "url" TEXT NOT NULL,
-
-    PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "SubRace" (
-    "id" SERIAL NOT NULL,
-    "index" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
-    "race_id" INTEGER NOT NULL,
-    "description" TEXT NOT NULL,
-    "ability_bonuses" TEXT,
-    "language_choice_num" INTEGER,
-    "traits_choices_num" INTEGER,
-    "url" TEXT NOT NULL,
-    "traitId" INTEGER,
 
     PRIMARY KEY ("id")
 );
@@ -457,13 +456,7 @@ CREATE TABLE "_starting_equipment_choices_bg" (
 );
 
 -- CreateTable
-CREATE TABLE "_RaceToTrait" (
-    "A" INTEGER NOT NULL,
-    "B" INTEGER NOT NULL
-);
-
--- CreateTable
-CREATE TABLE "_subrace_traits" (
+CREATE TABLE "_ProficiencyToRace" (
     "A" INTEGER NOT NULL,
     "B" INTEGER NOT NULL
 );
@@ -481,25 +474,25 @@ CREATE TABLE "_proficiency_choices_trait" (
 );
 
 -- CreateTable
-CREATE TABLE "_ProficiencyToRace" (
+CREATE TABLE "_RaceToTrait" (
+    "A" INTEGER NOT NULL,
+    "B" INTEGER NOT NULL
+);
+
+-- CreateTable
+CREATE TABLE "_subrace_traits" (
+    "A" INTEGER NOT NULL,
+    "B" INTEGER NOT NULL
+);
+
+-- CreateTable
+CREATE TABLE "_subrace_traits_choices" (
     "A" INTEGER NOT NULL,
     "B" INTEGER NOT NULL
 );
 
 -- CreateTable
 CREATE TABLE "_LanguageToRace" (
-    "A" INTEGER NOT NULL,
-    "B" INTEGER NOT NULL
-);
-
--- CreateTable
-CREATE TABLE "_languages" (
-    "A" INTEGER NOT NULL,
-    "B" INTEGER NOT NULL
-);
-
--- CreateTable
-CREATE TABLE "_language_choices" (
     "A" INTEGER NOT NULL,
     "B" INTEGER NOT NULL
 );
@@ -565,6 +558,15 @@ CREATE UNIQUE INDEX "Equipment.index_unique" ON "Equipment"("index");
 CREATE UNIQUE INDEX "Equipment.url_unique" ON "Equipment"("url");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Proficiency.index_unique" ON "Proficiency"("index");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Proficiency.name_unique" ON "Proficiency"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Proficiency.url_unique" ON "Proficiency"("url");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Trait.index_unique" ON "Trait"("index");
 
 -- CreateIndex
@@ -574,13 +576,10 @@ CREATE UNIQUE INDEX "Trait.name_unique" ON "Trait"("name");
 CREATE UNIQUE INDEX "Trait.url_unique" ON "Trait"("url");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Proficiency.index_unique" ON "Proficiency"("index");
+CREATE UNIQUE INDEX "SubRace.index_unique" ON "SubRace"("index");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Proficiency.name_unique" ON "Proficiency"("name");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Proficiency.url_unique" ON "Proficiency"("url");
+CREATE UNIQUE INDEX "SubRace.url_unique" ON "SubRace"("url");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Language.index_unique" ON "Language"("index");
@@ -620,12 +619,6 @@ CREATE UNIQUE INDEX "Race.name_unique" ON "Race"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Race.url_unique" ON "Race"("url");
-
--- CreateIndex
-CREATE UNIQUE INDEX "SubRace.index_unique" ON "SubRace"("index");
-
--- CreateIndex
-CREATE UNIQUE INDEX "SubRace.url_unique" ON "SubRace"("url");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "EquipmentCategory.index_unique" ON "EquipmentCategory"("index");
@@ -733,16 +726,10 @@ CREATE UNIQUE INDEX "_starting_equipment_choices_bg_AB_unique" ON "_starting_equ
 CREATE INDEX "_starting_equipment_choices_bg_B_index" ON "_starting_equipment_choices_bg"("B");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "_RaceToTrait_AB_unique" ON "_RaceToTrait"("A", "B");
+CREATE UNIQUE INDEX "_ProficiencyToRace_AB_unique" ON "_ProficiencyToRace"("A", "B");
 
 -- CreateIndex
-CREATE INDEX "_RaceToTrait_B_index" ON "_RaceToTrait"("B");
-
--- CreateIndex
-CREATE UNIQUE INDEX "_subrace_traits_AB_unique" ON "_subrace_traits"("A", "B");
-
--- CreateIndex
-CREATE INDEX "_subrace_traits_B_index" ON "_subrace_traits"("B");
+CREATE INDEX "_ProficiencyToRace_B_index" ON "_ProficiencyToRace"("B");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_proficiency_AB_unique" ON "_proficiency"("A", "B");
@@ -757,28 +744,28 @@ CREATE UNIQUE INDEX "_proficiency_choices_trait_AB_unique" ON "_proficiency_choi
 CREATE INDEX "_proficiency_choices_trait_B_index" ON "_proficiency_choices_trait"("B");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "_ProficiencyToRace_AB_unique" ON "_ProficiencyToRace"("A", "B");
+CREATE UNIQUE INDEX "_RaceToTrait_AB_unique" ON "_RaceToTrait"("A", "B");
 
 -- CreateIndex
-CREATE INDEX "_ProficiencyToRace_B_index" ON "_ProficiencyToRace"("B");
+CREATE INDEX "_RaceToTrait_B_index" ON "_RaceToTrait"("B");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "_subrace_traits_AB_unique" ON "_subrace_traits"("A", "B");
+
+-- CreateIndex
+CREATE INDEX "_subrace_traits_B_index" ON "_subrace_traits"("B");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "_subrace_traits_choices_AB_unique" ON "_subrace_traits_choices"("A", "B");
+
+-- CreateIndex
+CREATE INDEX "_subrace_traits_choices_B_index" ON "_subrace_traits_choices"("B");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_LanguageToRace_AB_unique" ON "_LanguageToRace"("A", "B");
 
 -- CreateIndex
 CREATE INDEX "_LanguageToRace_B_index" ON "_LanguageToRace"("B");
-
--- CreateIndex
-CREATE UNIQUE INDEX "_languages_AB_unique" ON "_languages"("A", "B");
-
--- CreateIndex
-CREATE INDEX "_languages_B_index" ON "_languages"("B");
-
--- CreateIndex
-CREATE UNIQUE INDEX "_language_choices_AB_unique" ON "_language_choices"("A", "B");
-
--- CreateIndex
-CREATE INDEX "_language_choices_B_index" ON "_language_choices"("B");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_feature_choices_AB_unique" ON "_feature_choices"("A", "B");
@@ -829,22 +816,25 @@ ALTER TABLE "Equipment" ADD FOREIGN KEY ("equipmentId") REFERENCES "Equipment"("
 ALTER TABLE "Equipment" ADD FOREIGN KEY ("equipmentCategoryId") REFERENCES "EquipmentCategory"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Trait" ADD FOREIGN KEY ("classId") REFERENCES "Class"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Trait" ADD FOREIGN KEY ("subRaceId") REFERENCES "SubRace"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE "Proficiency" ADD FOREIGN KEY ("backgroundId") REFERENCES "Background"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Proficiency" ADD FOREIGN KEY ("subRaceId") REFERENCES "SubRace"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "Trait" ADD FOREIGN KEY ("classId") REFERENCES "Class"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "SubRace" ADD FOREIGN KEY ("race_id") REFERENCES "Race"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "Language" ADD FOREIGN KEY ("characterId") REFERENCES "Character"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Language" ADD FOREIGN KEY ("backgroundId") REFERENCES "Background"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Language" ADD FOREIGN KEY ("subRaceId") REFERENCES "SubRace"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Level" ADD FOREIGN KEY ("classId") REFERENCES "Class"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -863,12 +853,6 @@ ALTER TABLE "Feature" ADD FOREIGN KEY ("subClassId") REFERENCES "SubClass"("id")
 
 -- AddForeignKey
 ALTER TABLE "Feature" ADD FOREIGN KEY ("levelId") REFERENCES "Level"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "SubRace" ADD FOREIGN KEY ("race_id") REFERENCES "Race"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "SubRace" ADD FOREIGN KEY ("traitId") REFERENCES "Trait"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "MagicItem" ADD FOREIGN KEY ("equipment_category_id") REFERENCES "EquipmentCategory"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -946,16 +930,10 @@ ALTER TABLE "_starting_equipment_choices_bg" ADD FOREIGN KEY ("A") REFERENCES "B
 ALTER TABLE "_starting_equipment_choices_bg" ADD FOREIGN KEY ("B") REFERENCES "Equipment"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "_RaceToTrait" ADD FOREIGN KEY ("A") REFERENCES "Race"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "_ProficiencyToRace" ADD FOREIGN KEY ("A") REFERENCES "Proficiency"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "_RaceToTrait" ADD FOREIGN KEY ("B") REFERENCES "Trait"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_subrace_traits" ADD FOREIGN KEY ("A") REFERENCES "SubRace"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_subrace_traits" ADD FOREIGN KEY ("B") REFERENCES "Trait"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "_ProficiencyToRace" ADD FOREIGN KEY ("B") REFERENCES "Race"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_proficiency" ADD FOREIGN KEY ("A") REFERENCES "Proficiency"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -970,28 +948,28 @@ ALTER TABLE "_proficiency_choices_trait" ADD FOREIGN KEY ("A") REFERENCES "Profi
 ALTER TABLE "_proficiency_choices_trait" ADD FOREIGN KEY ("B") REFERENCES "Trait"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "_ProficiencyToRace" ADD FOREIGN KEY ("A") REFERENCES "Proficiency"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "_RaceToTrait" ADD FOREIGN KEY ("A") REFERENCES "Race"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "_ProficiencyToRace" ADD FOREIGN KEY ("B") REFERENCES "Race"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "_RaceToTrait" ADD FOREIGN KEY ("B") REFERENCES "Trait"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_subrace_traits" ADD FOREIGN KEY ("A") REFERENCES "SubRace"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_subrace_traits" ADD FOREIGN KEY ("B") REFERENCES "Trait"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_subrace_traits_choices" ADD FOREIGN KEY ("A") REFERENCES "SubRace"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_subrace_traits_choices" ADD FOREIGN KEY ("B") REFERENCES "Trait"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_LanguageToRace" ADD FOREIGN KEY ("A") REFERENCES "Language"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_LanguageToRace" ADD FOREIGN KEY ("B") REFERENCES "Race"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_languages" ADD FOREIGN KEY ("A") REFERENCES "Language"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_languages" ADD FOREIGN KEY ("B") REFERENCES "SubRace"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_language_choices" ADD FOREIGN KEY ("A") REFERENCES "Language"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_language_choices" ADD FOREIGN KEY ("B") REFERENCES "SubRace"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_feature_choices" ADD FOREIGN KEY ("A") REFERENCES "Feature"("id") ON DELETE CASCADE ON UPDATE CASCADE;

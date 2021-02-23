@@ -10,7 +10,6 @@ generator client {
   provider = "prisma-client-js"
 }
 
-
 model User {
   id Int @id @default(autoincrement()) 
   username String @unique
@@ -173,7 +172,7 @@ model SubRace {
   index String @unique
   name String
   race_id Int
-  Race Race @relation(fields: [race_id], references: [id])
+  race Race @relation(fields: [race_id], references: [id])
   description String
   ability_bonuses String?
   starting_proficiencies Proficiency[]

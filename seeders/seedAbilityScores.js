@@ -5,6 +5,7 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 const seedAbilityScores = async () => {
+    console.log("");
     console.log(chalk.yellow("Starting..."));
 
     let abilityScoreData = await fetch("https://dnd5eapi.co/api/ability-scores");

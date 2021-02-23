@@ -5,6 +5,7 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 const seedLanguages = async () => {
+    console.log("");
     console.log(chalk.yellow("Starting..."));
 
     let langData = await fetch("https://dnd5eapi.co/api/languages");

@@ -5,6 +5,7 @@ const {PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 const seedProficiencies = async () => {
+    console.log("");
     console.log(chalk.yellow("Starting..."))
     const profData = await fetch("https://dnd5eapi.co/api/proficiencies");
     const profs = await profData.json();

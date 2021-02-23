@@ -129,7 +129,7 @@ model Equipment {
   cost String?
   damage String?
   two_handed_damage String?
-  range String?
+  range Int?
   weight Float?
   properties WeaponProperty[]
   contents Equipment[]
@@ -137,21 +137,6 @@ model Equipment {
   backgrounds_starting Background[] @relation("starting_equipment_choices_bg")
   classes Class[] @relation("starting_equipment")
   classes_starting Class[] @relation("starting_equipment_choices")
-  url String @unique
-}
-
-model Trait {
-  id Int @id @default(autoincrement())
-  index String @unique
-  races Race[]
-  subraces SubRace[] @relation("subrace_traits")
-  subraces_choices SubRace[] @relation("subraces_trait_choices")
-  name String @unique
-  description String[]
-  proficiencies Proficiency[] @relation("proficiency")
-  proficiencies_choices Int
-  proficiency_choices Proficiency[] @relation("proficiency_choices_trait")
-  classes Class[] @relation("traits")
   url String @unique
 }
 
@@ -168,14 +153,44 @@ model Proficiency {
   url String @unique
 }
 
+model Trait {
+  id Int @id @default(autoincrement())
+  index String @unique
+  races Race[]
+  name String @unique
+  description String[]
+  proficiencies Proficiency[] @relation("proficiency")
+  proficiencies_choices Int
+  proficiency_choices Proficiency[] @relation("proficiency_choices_trait")
+  classes Class[] @relation("traits")
+  subraces SubRace[] @relation("subrace_traits")
+  subace_choices SubRace[] @relation("subrace_traits_choices")
+  url String @unique
+}
+
+model SubRace {
+  id Int @id @default(autoincrement())
+  index String @unique
+  name String
+  race_id Int
+  race Race @relation(fields: [race_id], references: [id])
+  description String
+  ability_bonuses String?
+  starting_proficiencies Proficiency[]
+  language_choice_num Int?
+  language_choices Language[]
+  traits_choices_num Int?
+  traits Trait[] @relation("subrace_traits")
+  trait_choices Trait[] @relation("subrace_traits_choices")
+  url String @unique
+}
+
 model Language {
   id Int @id @default(autoincrement())
   index String @unique
   name String @unique
   type String
   typical_speakers Race[]
-  subraces SubRace[] @relation("languages")
-  subraces_with_choices SubRace[] @relation("language_choices")
   script String
   url String @unique
 }
@@ -241,24 +256,6 @@ model Race {
   languages_desc String
   traits Trait[]
   subraces SubRace[]
-  url String @unique
-}
-
-model SubRace {
-  id Int @id @default(autoincrement())
-  index String @unique
-  name String
-  race_id Int
-  Race Race @relation(fields: [race_id], references: [id])
-  description String
-  ability_bonuses String?
-  starting_proficiencies Proficiency[]
-  languages Language[] @relation("languages")
-  language_choice_num Int?
-  language_choices Language[] @relation("language_choices")
-  traits Trait[] @relation("subrace_traits")
-  traits_choices_num Int?
-  traits_choices Trait[] @relation("subrace_trait_choices")
   url String @unique
 }
 
